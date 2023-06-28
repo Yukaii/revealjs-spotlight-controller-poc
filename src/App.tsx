@@ -1,35 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Router, Route } from "wouter";
+import { useLocationProperty, navigate } from "wouter/use-location";
+import Home from './pages/Home'
+import Controller from './pages/Controller'
 
-function App() {
-  const [count, setCount] = useState(0)
+const hashLocation = () => window.location.hash.replace(/^#/, "") || "/";
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+const hashNavigate = (to: string) => navigate("#" + to);
 
-export default App
+const useHashLocation = () => {
+  const location = useLocationProperty(hashLocation);
+  return [location, hashNavigate];
+};
+
+const App = () => (
+  <Router hook={useHashLocation}>
+    <Route path="/controller" component={Controller} />
+    <Route path="/" component={Home} />
+  </Router>
+);
+
+export default App;
