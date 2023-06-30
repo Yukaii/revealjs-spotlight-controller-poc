@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "server": "ts-node --esm src/server.ts"
+    "server": "ts-node --esm src/server.ts",
+    "watch:server": "nodemon --watch src/server.ts --exec npm run server"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -25,12 +26,15 @@
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
+    "@unocss/preset-uno": "^0.53.4",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
+    "unocss": "^0.53.4",
     "vite": "^4.3.9"
   }
 }
