@@ -5,6 +5,8 @@ import { useDeviceOrientation } from '../hooks/useDeviceOrientation'
 
 let socket: Socket;
 
+const hostname = window.location.hostname;
+
 const useStateRef = <T extends any>(initialState: T) => {
   const [state, setState] = useState(initialState);
   const stateRef = useMemo(() => {
@@ -59,7 +61,7 @@ export const Controller = () => {
   }, [deviceOrientation, emitDeviceOrientation, isPointingHoldRef])
 
   useEffect(() => {
-    socket = io("http://192.168.135.130:3000");
+    socket = io(`http://${hostname}:3000`);
 
     socket.on("connect", () => {
       socket.emit("clientData", {
