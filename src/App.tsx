@@ -13,7 +13,7 @@ const useHashLocation = () => {
 };
 
 const App = () => (
-  <Router hook={useHashLocation}>
+  <Router hook={useHashLocation as any}>
     <Route path="/controller" component={Controller} />
     <Route path="/" component={Home} />
   </Router>

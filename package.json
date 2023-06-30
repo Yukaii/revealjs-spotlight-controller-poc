@@ -12,6 +12,7 @@
     "watch:server": "nodemon --watch src/server.ts --exec npm run server"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
     "express": "^4.18.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

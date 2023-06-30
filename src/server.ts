@@ -10,7 +10,6 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
   },
 } as any);
 
@@ -18,9 +17,16 @@ const clientIds = new Set();
 const controllerIds = new Set();
 
 // server state flags
-const isCaliberated = false;
-const isCaliberating = false;
-const calibrateStep = 0;
+// eslint-disable-next-line prefer-const
+let isCalibrated = false;
+let isCalibrating = false;
+let calibrateStep = 0;
+
+const calibrationData: {
+  alpha: number;
+  beta: number;
+  gamma: number;
+}[] = [];
 
 const isSocketReady = (socket: Socket) => {
   const socketId = socket.id;
@@ -33,14 +39,16 @@ const isSocketReady = (socket: Socket) => {
 
 const syncServerState = (socket: Socket) => {
   const serverState = {
-    isCalliberated: isCaliberated,
-  }
+    isCalibrated,
+    isCalibrating,
+    calibrateStep,
+  };
 
   socket.emit("serverState", {
     serverState,
   });
-}
-  
+};
+
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
@@ -53,6 +61,36 @@ io.on("connection", (socket) => {
     // Here you would process the data and calculate the position of the pointer.
     // For simplicity, we are just broadcasting the data to all connected clients.
     socket.broadcast.emit("movePointer", data);
+  });
+
+  socket.on("startCalibration", () => {
+    console.log("Received start calibration");
+    isCalibrating = true;
+    calibrateStep = 0;
+    syncServerState(socket);
+  });
+
+  socket.on("calibrationData", (data) => {
+    console.log("Received calibration data:", data);
+    const { alpha, beta, gamma } = data || {};
+
+    if (isCalibrating) {
+      calibrationData[calibrateStep] = {
+        alpha,
+        beta,
+        gamma,
+      };
+
+      calibrateStep += 1;
+    }
+
+    if (calibrateStep >= 3) {
+      isCalibrating = false;
+      isCalibrated = true;
+      calibrateStep = 0;
+    }
+
+    syncServerState(socket);
   });
 
   socket.on("disconnect", () => {
